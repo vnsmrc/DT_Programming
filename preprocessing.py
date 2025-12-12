@@ -1,17 +1,15 @@
-# preprocessing.py
+#preprocessing.py
 
 import ifcopenshell
 import tempfile
 import os
 
 def load_ifc_model(file):
-    """Lädt das IFC-Modell in den Speicher.
-    
-    Akzeptiert sowohl Dateipfade (str/PathLike) als auch Streamlit UploadedFile-Objekte.
-    """
+    #Lädt das IFC-Modell in den Speicher
+    #Akzeptiert Dateipfade aber auch Streamlit UploadedFile-Objekte
     try:
-        # Wenn es ein Streamlit UploadedFile ist, in temporäre Datei schreiben
-        if hasattr(file, 'read'):  # file-like object
+        #in temporäre Datei schreiben
+        if hasattr(file, 'read'):
             with tempfile.NamedTemporaryFile(suffix='.ifc', delete=False) as tmp:
                 tmp.write(file.read())
                 tmp_path = tmp.name
@@ -20,7 +18,7 @@ def load_ifc_model(file):
             finally:
                 os.unlink(tmp_path)
         else:
-            # Regulärer Dateipfad
+            #Regulärer Dateipfad
             model = ifcopenshell.open(file)
         return model
     except Exception as e:
@@ -28,12 +26,12 @@ def load_ifc_model(file):
 
 
 def detect_ifc_classes(model):
-    """Liefert alle im Modell vorkommenden IFC-Klassen."""
+    #Liefert alle im Modell vorkommenden IFC-Klassen
     return sorted(set(ent.is_a() for ent in model))
 
 
 def detect_attributes_for_class(model, ifc_class):
-    """Gibt alle Attribute einer Beispiel-Entity zurück."""
+    #Gibt alle Attribute einer Beispiel-Entity zurück
     sample_entities = model.by_type(ifc_class)
 
     if not sample_entities:
@@ -43,7 +41,7 @@ def detect_attributes_for_class(model, ifc_class):
 
 
 def extract_attributes(model, selected_classes, selected_attributes):
-    """Extrahiert die gewünschten Attribute aus dem IFC-Modell."""
+    #Extrahiert die gewünschten Attribute aus dem IFC-Modell
     import pandas as pd
     rows = []
 
